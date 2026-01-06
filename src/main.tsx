@@ -5,10 +5,11 @@ import {
   createBrowserRouter,
   Outlet,
   RouterProvider,
+  Link
 } from "react-router-dom";
 // import './index.css'
 import UserPage from './components/user/users.page.tsx';
-import { AppstoreOutlined, MailOutlined } from '@ant-design/icons';
+import { HomeOutlined, UserOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Menu } from 'antd';
 
@@ -16,14 +17,14 @@ type MenuItem = Required<MenuProps>['items'][number];
 
 const items: MenuItem[] = [
   {
-    label: 'Home',
+    label: <Link to={'/'}>Home</Link>,
     key: 'home',
-    icon: <MailOutlined />,
+    icon: <HomeOutlined />,
   },
   {
-    label: 'Manage Users',
+    label: <Link to={'/users'}>Manager Users</Link>,
     key: 'users',
-    icon: <AppstoreOutlined />,
+    icon: <UserOutlined />,
   },
 ];
 
@@ -31,7 +32,6 @@ const Header = () => {
   const [current, setCurrent] = useState('home');
 
   const onClick: MenuProps['onClick'] = (e) => {
-    console.log('click ', e);
     setCurrent(e.key);
   };
 
@@ -48,7 +48,6 @@ const LayoutAdmin = () => {
     <div>
       <Header />
       <Outlet />
-      <footer>footer</footer>
     </div>
   )
 }

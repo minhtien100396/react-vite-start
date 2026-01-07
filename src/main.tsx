@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
 import {
@@ -29,7 +29,18 @@ const items: MenuItem[] = [
 ];
 
 const Header = () => {
-  const [current, setCurrent] = useState('home');
+  const [current, setCurrent] = useState('');
+
+  useEffect(() => {
+    if (location.pathname === "/users") {
+      setCurrent("users");
+
+    }
+    else {
+      setCurrent("home");
+
+    }
+  }, [location]);
 
   const onClick: MenuProps['onClick'] = (e) => {
     setCurrent(e.key);

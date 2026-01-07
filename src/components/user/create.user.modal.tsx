@@ -1,4 +1,5 @@
-import { Modal, Input, notification } from 'antd';
+import { Modal, Input, notification, Form, Button, Select } from 'antd';
+import { Option } from 'antd/es/mentions';
 import { useState } from 'react';
 
 interface IProps {
@@ -72,6 +73,11 @@ const CreateUserModal = (props: IProps) => {
         setRole("");
     }
 
+
+    const onFinish = (values: any) => {
+        console.log('Success:', values);
+    };
+
     return (
         <Modal
             title="Add new user"
@@ -80,7 +86,7 @@ const CreateUserModal = (props: IProps) => {
             onCancel={handleCloseCreateModal}
             maskClosable={false}
         >
-            <div>
+            {/* <div>
                 <label htmlFor="">Name:</label>
                 <Input
                     value={name}
@@ -92,11 +98,7 @@ const CreateUserModal = (props: IProps) => {
 
 
             </div>
-            <div>
-                <label htmlFor="">Password:</label>
-                <Input value={password} onChange={(event) => setPassword(event.target.value)} />
-
-            </div>
+            /
             <div>
                 <label htmlFor="">Age:</label>
                 <Input value={age} onChange={(event) => setAge(event.target.value)} />
@@ -112,7 +114,89 @@ const CreateUserModal = (props: IProps) => {
             <div>
                 <label htmlFor="">Role:</label>
                 <Input value={role} onChange={(event) => setRole(event.target.value)} />
-            </div>
+            </div> */}
+
+            <Form
+                name="basic"
+                onFinish={onFinish}
+                layout='vertical'
+            >
+                <Form.Item
+                    label="Name"
+                    name="name"
+                    rules={[{ required: true, message: 'Please input your name!' }]}
+                >
+                    <Input />
+                </Form.Item>
+
+                <Form.Item
+                    label="Email"
+                    name="email"
+                    rules={[{ required: true, message: 'Please input your email!' }]}
+                >
+                    <Input />
+                </Form.Item>
+
+                <Form.Item
+                    label="Password"
+                    name="password"
+                    rules={[{ required: true, message: 'Please input your password!' }]}
+                >
+                    <Input.Password />
+                </Form.Item>
+
+                <Form.Item
+                    label="Age"
+                    name="age"
+                    rules={[{ required: true, message: 'Please input your age!' }]}
+                >
+                    <Input />
+                </Form.Item>
+
+                <Form.Item
+                    label="Gender"
+                    name="gender"
+                    rules={[{ required: true, message: 'Please input your gender!' }]}
+                >
+                    <Select
+                        placeholder="select your gender"
+                        allowClear
+                    >
+                        <Option value="MALE">Male</Option>
+                        <Option value="FEMALE">Female</Option>
+                        <Option value="OTHER">Other</Option>
+                    </Select>
+                </Form.Item>
+
+                <Form.Item
+                    label="Address"
+                    name="address"
+                    rules={[{ required: true, message: 'Please input your address!' }]}
+                >
+                    <Input />
+                </Form.Item>
+
+                <Form.Item
+                    label="Role"
+                    name="role"
+                    rules={[{ required: true, message: 'Please input your role!' }]}
+                >
+                    <Select
+                        placeholder="select your role"
+                        allowClear
+                    >
+                        <Option value="USER">User</Option>
+                        <Option value="ADMIN">Admin</Option>
+                    </Select>
+                </Form.Item>
+
+                <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+                    <Button type="primary" htmlType="submit">
+                        Submit
+                    </Button>
+                </Form.Item>
+            </Form>
+
         </Modal>
     )
 }

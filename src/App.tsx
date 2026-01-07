@@ -1,10 +1,39 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.scss'
 
 function App() {
+
   const [count, setCount] = useState(0)
+
+
+  useEffect(() => {
+    login();
+  }, [])
+
+  const login = async () => {
+    const res = await fetch("http://localhost:8000/api/v1/auth/login",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          username: "hoidanit@gmail.com",
+          password: "123456"
+        })
+      }
+    );
+
+    const d = await res.json();
+    if (d.data) {
+      localStorage.setItem("access_token", d.data.access_token)
+    }
+  }
+
+
+
 
   return (
     <>

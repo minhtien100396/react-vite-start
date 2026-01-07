@@ -8,7 +8,7 @@ import {
   Link
 } from "react-router-dom";
 // import './index.css'
-import UserPage from './components/user/users.page.tsx';
+import UserPage from './screens/users.page.tsx';
 import { HomeOutlined, UserOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Menu } from 'antd';

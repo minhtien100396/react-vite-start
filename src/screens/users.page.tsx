@@ -1,4 +1,4 @@
-import UsersTable from "./users.table"
+import UsersTable from "../components/user/users.table"
 
 const UserPage = () => {
     return (

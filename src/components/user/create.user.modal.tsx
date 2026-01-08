@@ -1,6 +1,5 @@
-import { Modal, Input, notification, Form, Button, Select } from 'antd';
+import { Modal, Input, notification, Form, Select } from 'antd';
 import { Option } from 'antd/es/mentions';
-import { useState } from 'react';
 
 interface IProps {
     access_token: string;
@@ -12,20 +11,17 @@ interface IProps {
 const CreateUserModal = (props: IProps) => {
 
     const { access_token, getData, isCreateModalOpen, setIsCreateModalOpen } = props;
+    const [form] = Form.useForm();
 
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [age, setAge] = useState("");
-    const [gender, setGender] = useState("");
-    const [role, setRole] = useState("");
-    const [address, setAddress] = useState("");
+    const handleCloseCreateModal = () => {
+        setIsCreateModalOpen(false);
+        form.resetFields();
+    }
 
 
-    const handleOk = async () => {
-        const data = {
-            name, email, password, age, gender, role, address
-        }
+    const onFinish = async (values: any) => {
+        const { name, email, password, age, gender, role, address } = values;
+        const data = { name, email, password, age, gender, role, address };
 
         const res = await fetch("http://localhost:8000/api/v1/users",
             {
@@ -34,9 +30,7 @@ const CreateUserModal = (props: IProps) => {
                     'Authorization': `Bearer ${access_token}`,
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({
-                    ...data
-                })
+                body: JSON.stringify(data)
             }
         );
 
@@ -47,13 +41,7 @@ const CreateUserModal = (props: IProps) => {
                 message: JSON.stringify(d.message)
             })
             setIsCreateModalOpen(false);
-            setName("");
-            setEmail("");
-            setPassword("");
-            setAge("");
-            setGender("");
-            setAddress("");
-            setRole("");
+            form.resetFields();
         } else {
             notification.error({
                 description: JSON.stringify(d.message),
@@ -62,66 +50,24 @@ const CreateUserModal = (props: IProps) => {
         }
     };
 
-    const handleCloseCreateModal = () => {
-        setIsCreateModalOpen(false);
-        setName("");
-        setEmail("");
-        setPassword("");
-        setAge("");
-        setGender("");
-        setAddress("");
-        setRole("");
-    }
-
-
-    const onFinish = (values: any) => {
-        console.log('Success:', values);
-    };
-
     return (
         <Modal
             title="Add new user"
             open={isCreateModalOpen}
-            onOk={handleOk}
+            onOk={() => {
+                form.submit()
+            }}
             onCancel={handleCloseCreateModal}
             maskClosable={false}
         >
-            {/* <div>
-                <label htmlFor="">Name:</label>
-                <Input
-                    value={name}
-                    onChange={(event) => setName(event.target.value)} />
-            </div>
-            <div>
-                <label htmlFor="">Email:</label>
-                <Input value={email} onChange={(event) => setEmail(event.target.value)} />
-
-
-            </div>
-            /
-            <div>
-                <label htmlFor="">Age:</label>
-                <Input value={age} onChange={(event) => setAge(event.target.value)} />
-            </div>
-            <div>
-                <label htmlFor="">Gender:</label>
-                <Input value={gender} onChange={(event) => setGender(event.target.value)} />
-            </div>
-            <div>
-                <label htmlFor="">Address:</label>
-                <Input value={address} onChange={(event) => setAddress(event.target.value)} />
-            </div>
-            <div>
-                <label htmlFor="">Role:</label>
-                <Input value={role} onChange={(event) => setRole(event.target.value)} />
-            </div> */}
-
             <Form
                 name="basic"
                 onFinish={onFinish}
                 layout='vertical'
+                form={form}
             >
                 <Form.Item
+                    style={{ marginBottom: "5px" }}
                     label="Name"
                     name="name"
                     rules={[{ required: true, message: 'Please input your name!' }]}
@@ -130,6 +76,7 @@ const CreateUserModal = (props: IProps) => {
                 </Form.Item>
 
                 <Form.Item
+                    style={{ marginBottom: "5px" }}
                     label="Email"
                     name="email"
                     rules={[{ required: true, message: 'Please input your email!' }]}
@@ -138,6 +85,7 @@ const CreateUserModal = (props: IProps) => {
                 </Form.Item>
 
                 <Form.Item
+                    style={{ marginBottom: "5px" }}
                     label="Password"
                     name="password"
                     rules={[{ required: true, message: 'Please input your password!' }]}
@@ -146,6 +94,7 @@ const CreateUserModal = (props: IProps) => {
                 </Form.Item>
 
                 <Form.Item
+                    style={{ marginBottom: "5px" }}
                     label="Age"
                     name="age"
                     rules={[{ required: true, message: 'Please input your age!' }]}
@@ -154,6 +103,7 @@ const CreateUserModal = (props: IProps) => {
                 </Form.Item>
 
                 <Form.Item
+                    style={{ marginBottom: "5px" }}
                     label="Gender"
                     name="gender"
                     rules={[{ required: true, message: 'Please input your gender!' }]}
@@ -169,6 +119,7 @@ const CreateUserModal = (props: IProps) => {
                 </Form.Item>
 
                 <Form.Item
+                    style={{ marginBottom: "5px" }}
                     label="Address"
                     name="address"
                     rules={[{ required: true, message: 'Please input your address!' }]}
@@ -188,12 +139,6 @@ const CreateUserModal = (props: IProps) => {
                         <Option value="USER">User</Option>
                         <Option value="ADMIN">Admin</Option>
                     </Select>
-                </Form.Item>
-
-                <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-                    <Button type="primary" htmlType="submit">
-                        Submit
-                    </Button>
                 </Form.Item>
             </Form>
 

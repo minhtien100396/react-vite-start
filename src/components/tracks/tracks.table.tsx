@@ -2,30 +2,35 @@ import { useEffect, useState } from "react";
 // import "../../styles/users.css"
 import { Table, Button, notification, Popconfirm, message } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { PlusOutlined } from '@ant-design/icons';
-import CreateUserModal from "./create.user.modal";
-import UpdateUserModal from "./update.user.modal";
 
 
-
-
-export interface IUsers {
+export interface IUploader {
     _id: string;
     email: string;
     name: string;
-    password: string;
-    age: number;
-    gender: string
     role: string;
-    address: string;
+    type: string;
 }
 
-const UsersTable = () => {
+export interface ITracks {
+    _id: string;
+    title: string;
+    description: string;
+    category: string;
+    imgUrl: number;
+    trackUrl: string
+    countLike: number;
+    countPlay: number;
+    uploader: IUploader;
+    isDeleted: boolean;
+    __v: number;
+    createdAt: string;
+    updatedAt: string
+}
 
-    const [listUsers, setListUsers] = useState([]);
-    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-    const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
-    const [dataUpdate, setDataUpdate] = useState<null | IUsers>(null);
+const TrackTable = () => {
+
+    const [listTracks, setListTracks] = useState([]);
     const [meta, setMeta] = useState({
         current: 1,
         pageSize: 5,
@@ -41,7 +46,7 @@ const UsersTable = () => {
     }, [])
 
     const getData = async () => {
-        const res = await fetch(`http://localhost:8000/api/v1/users?current=${meta.current}&pageSize=${meta.pageSize}`,
+        const res = await fetch(`http://localhost:8000/api/v1/tracks?current=${meta.current}&pageSize=${meta.pageSize}`,
             {
                 headers: {
                     'Authorization': `Bearer ${access_token}`,
@@ -56,7 +61,7 @@ const UsersTable = () => {
                 message: JSON.stringify(d.message)
             })
         }
-        setListUsers(d.data.result)
+        setListTracks(d.data.result)
         setMeta({
             current: d.data.meta.current,
             pageSize: d.data.meta.pageSize,
@@ -65,47 +70,51 @@ const UsersTable = () => {
         })
     }
 
-    const columns: ColumnsType<IUsers> = [
+    const columns: ColumnsType<ITracks> = [
         {
-
             title: 'STT',
+            dataIndex: '_id',
             render: (_value, _record, index) => {
                 const offset = (meta.current - 1) * meta.pageSize;
                 return <div>{offset + index + 1}</div>;
             },
 
+        },
 
+        {
+            title: 'Title',
+            dataIndex: 'title',
         },
         {
-            title: 'Email',
-            dataIndex: 'email',
-            render: (value, record) => {
-                return (
-                    <div>{record.email}</div>
-                )
-            }
+            title: 'description',
+            dataIndex: 'description',
         },
         {
-            title: 'Name',
-            dataIndex: 'name',
+            title: 'category',
+            dataIndex: 'category',
         },
         {
-            title: 'Role',
-            dataIndex: 'role',
+            title: 'trackUrl',
+            dataIndex: 'trackUrl',
+        },
+        {
+            title: 'Uploader',
+            dataIndex: ['uploader', 'name']
+            // render: (value, record) => {
+            //     return (
+            //         <div>{record.uploader.name}</div>
+            //     )
+            // }
         },
         {
             title: 'Actions',
             render: (value, record) => {
                 return (
                     <div>
-                        <Button onClick={() => {
-                            setIsUpdateModalOpen(true)
-                            setDataUpdate(record);
-                        }}>Edit</Button>
                         {holder}
                         <Popconfirm
-                            title="Delete the user"
-                            description={`Are you sure to delete this user. name = ${record.name} ?`}
+                            title="Delete the track"
+                            description={`Are you sure to delete this track. name = ${record.title} ?`}
                             onConfirm={() => {
                                 confirm(record)
                             }}
@@ -122,10 +131,10 @@ const UsersTable = () => {
 
     const [messageApi, holder] = message.useMessage();
 
-    const confirm = async (user: IUsers) => {
+    const confirm = async (track: ITracks) => {
 
         const res = await fetch(
-            `http://localhost:8000/api/v1/users/${user._id}`,
+            `http://localhost:8000/api/v1/tracks/${track._id}`,
             {
                 method: "DELETE",
                 headers: {
@@ -139,7 +148,7 @@ const UsersTable = () => {
                 message: JSON.stringify(d.message)
             })
 
-            const resPage = await fetch(`http://localhost:8000/api/v1/users?current=${meta.current}&pageSize=${meta.pageSize}`,
+            const resPage = await fetch(`http://localhost:8000/api/v1/tracks?current=${meta.current}&pageSize=${meta.pageSize}`,
                 {
                     headers: {
                         'Authorization': `Bearer ${access_token}`,
@@ -154,7 +163,7 @@ const UsersTable = () => {
                 setMeta({ ...meta, current: meta.current - 1 });
                 await handleOnChange(meta.current - 1, meta.pageSize);
             } else {
-                setListUsers(dataPage.data.result);
+                setListTracks(dataPage.data.result);
                 setMeta(dataPage.data.meta);
             }
 
@@ -164,7 +173,7 @@ const UsersTable = () => {
     };
 
     const handleOnChange = async (page: number, pageSize: number) => {
-        const res = await fetch(`http://localhost:8000/api/v1/users?current=${page}&pageSize=${pageSize}`,
+        const res = await fetch(`http://localhost:8000/api/v1/tracks?current=${page}&pageSize=${pageSize}`,
             {
                 headers: {
                     'Authorization': `Bearer ${access_token}`,
@@ -179,7 +188,7 @@ const UsersTable = () => {
                 message: JSON.stringify(d.message)
             })
         }
-        setListUsers(d.data.result)
+        setListTracks(d.data.result)
         setMeta({
             current: d.data.meta.current,
             pageSize: d.data.meta.pageSize,
@@ -193,17 +202,12 @@ const UsersTable = () => {
     return (
         <div>
             <div className="hoidanit" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <h2>Table Users</h2>
-                <div>
-                    <Button type="primary" icon={<PlusOutlined />} onClick={() => {
-                        setIsCreateModalOpen(true);
-                    }}>Add new</Button>
-                </div>
+                <h2>Table Tracks</h2>
             </div>
 
             <Table
                 columns={columns}
-                dataSource={listUsers}
+                dataSource={listTracks}
                 rowKey={"_id"}
                 pagination={{
                     current: meta.current,
@@ -215,24 +219,8 @@ const UsersTable = () => {
                     pageSizeOptions: ['5', '10', '20', '50']
                 }}
             />
-            <CreateUserModal
-                access_token={access_token}
-                getData={getData}
-                isCreateModalOpen={isCreateModalOpen}
-                setIsCreateModalOpen={setIsCreateModalOpen}
-            />
-            <UpdateUserModal
-                access_token={access_token}
-                getData={getData}
-                isUpdateModalOpen={isUpdateModalOpen}
-                setIsUpdateModalOpen={setIsUpdateModalOpen}
-                dataUpdate={dataUpdate}
-                setDataUpdate={setDataUpdate}
-            />
-
-
         </div>
     )
 }
 
-export default UsersTable;
+export default TrackTable;

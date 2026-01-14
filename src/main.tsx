@@ -9,10 +9,11 @@ import {
 } from "react-router-dom";
 // import './index.css'
 import UserPage from './screens/users.page.tsx';
-import { AudioOutlined, HomeOutlined, UserOutlined } from '@ant-design/icons';
+import { AudioOutlined, CommentOutlined, HomeOutlined, UserOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Menu } from 'antd';
 import TrackPage from './screens/tracks.page.tsx';
+import CommentPage from './screens/comments.page.tsx';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -26,10 +27,16 @@ const items: MenuItem[] = [
     label: <Link to={'/users'}>Manager Users</Link>,
     key: 'users',
     icon: <UserOutlined />,
-  }, {
+  },
+  {
     label: <Link to={'/tracks'}>Manager Tracks</Link>,
     key: 'tracks',
     icon: <AudioOutlined />,
+  },
+  {
+    label: <Link to={'/comments'}>Manager Comments</Link>,
+    key: 'comments',
+    icon: <CommentOutlined />,
   },
 ];
 
@@ -42,10 +49,11 @@ const Header = () => {
 
     } else if (location.pathname === "/tracks") {
       setCurrent("tracks");
+    } else if (location.pathname === "/comments") {
+      setCurrent("comments");
     }
     else {
       setCurrent("home");
-
     }
   }, [location]);
 
@@ -83,6 +91,10 @@ const router = createBrowserRouter([
       {
         path: "tracks",
         element: <TrackPage />,
+      },
+      {
+        path: "comments",
+        element: <CommentPage />,
       },
     ]
   }

@@ -20,7 +20,7 @@ function App() {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          username: "hoidanit@gmail.com",
+          username: "user@gmail.com",
           password: "123456"
         })
       }
